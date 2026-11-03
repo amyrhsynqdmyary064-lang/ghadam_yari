@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>قدم‌یاری | برنامه‌ریز درسی</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f2f5fa;color:#24344d;font-family:Tahoma,Arial,sans-serif}
+header{background:linear-gradient(120deg,#dcecff,#e9e4ff);padding:28px 18px;text-align:center}
+header h1{font-size:30px;margin:0 0 10px}
+header p{margin:0;color:#536783}
+main{max-width:750px;margin:auto;padding:15px}
+nav{display:flex;gap:7px;overflow:auto;margin:10px 0 18px}
+button{cursor:pointer;font-family:inherit}
+nav button,.secondary{border:1px solid #dce3ee;background:white;color:#24344d;padding:11px;border-radius:11px;white-space:nowrap}
+nav button.active,.primary{background:#315b91;color:white;border-color:#315b91}
+.card{background:white;border:1px solid #e1e8f1;border-radius:16px;padding:16px;margin-bottom:13px;box-shadow:0 5px 18px #24344d0a}
+h3{margin:0 0 13px;font-size:16px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{text-align:center;background:#f5f8fc;padding:13px 5px;border-radius:12px}
+.stat strong{display:block;font-size:22px}
+.stat small{color:#718096}
+input,select{width:100%;padding:11px;border:1px solid #dce3ee;border-radius:10px;margin:5px 0;font-family:inherit}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.primary{border:0;padding:11px 15px;border-radius:10px;font-weight:bold}
+.full{width:100%;margin-top:8px}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:12px 0}
+.day{padding:9px 2px;background:#f5f7fb;border:1px solid #e1e8f1;border-radius:9px;font-size:11px}
+.day.active{background:#315b91;color:white}
+.task{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #edf0f5}
+.task input{width:18px;margin:0}
+.task span{flex:1;font-size:13px}
+.task small{display:block;color:#8290a3;margin-top:4px}
+.done{text-decoration:line-through;opacity:.5}
+.delete{border:0;background:#fff0f0;color:#bd4141;border-radius:8px;padding:7px}
+.bar{height:9px;background:#e9eef5;border-radius:20px;overflow:hidden}
+.bar div{height:100%;background:#4e91ca}
+.clock{text-align:center;font-size:50px;font-weight:bold;margin:20px}
+.center{text-align:center}
+.muted{color:#7b899b;font-size:12px;line-height:1.8}
+footer{text-align:center;color:#8793a4;padding:20px;font-size:11px}
+@media(max-width:390px){header h1{font-size:25px}.day{font-size:9px}.stats{gap:5px}}
+</style>
+</head>
+<body>
+<header>
+<h1>قدم‌یاری 📚</h1>
+<p>هر قدم کوچک، یک پیشرفت بزرگ</p>
+<p style="margin-top:12px;font-size:11px">نسخه آزمایشی</p>
+</header>
+<main>
+<nav>
+<button class="active" data-page="home">خانه</button>
+<button data-page="plan">برنامه هفتگی</button>
+<button data-page="timer">تایمر تمرکز</button>
+<button data-page="report">گزارش من</button>
+</nav>
+<div id="app"></div>
+</main>
+<footer>قدم‌یاری | ساخته‌شده برای پیشرفت روزانه</footer>
+<script>
+const days=['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه'];
+let selected=(new Date().getDay()+1)%7;
+let page='home',tasks=[],seconds=1500,running=false,timer=null;
+try{tasks=JSON.parse(localStorage.getItem('ghadam_tasks')||'[]')}catch(e){}
+const app=document.getElementById('app');
+const save=()=>localStorage.setItem('ghadam_tasks',JSON.stringify(tasks));
+const fmt=n=>String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');
+function picker(){return '<div class="days">'+days.map((d,i)=>`<button class="day ${i===selected?'active':''}" onclick="chooseDay(${i})">${d}</button>`).join('')+'</div>'}
+function list(){
+let a=tasks.filter(t=>t.day===selected);
+if(!a.length)return '<p class="muted center">هنوز کاری ثبت نکرده‌ای.</p>';
+return a.map(t=>`<div class="task"><input type="checkbox" ${t.done?'checked':''} onchange="toggleTask(${t.id})"><span class="${t.done?'done':''}">${escapeText(t.name)}<small>${escapeText(t.subject)} | ${t.mins} دقیقه</small></span><button class="delete" onclick="deleteTask(${t.id})">حذف</button></div>`).join('');
+}
+function escapeText(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function form(){return `<div class="card"><h3>افزودن فعالیت جدید</h3><form id="taskForm"><input name="name" placeholder="نام تکلیف یا فعالیت" required maxlength="60"><div class="row"><input name="subject" placeholder="نام درس"><input name="mins" type="number" min="5" max="600" value="30"></div><button class="primary full">افزودن به برنامه</button></form></div>`}
+function render(){
+let total=tasks.length,done=tasks.filter(t=>t.done).length;
+let minutes=tasks.filter(t=>t.done).reduce((a,t)=>a+t.mins,0);
+let percent=total?Math.round(done/total*100):0;
+document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+if(page==='home'||page==='plan'){
+app.innerHTML=(page==='home'?`<div class="stats"><div class="stat"><strong>${total}</strong><small>کل کارها</small></div><div class="stat"><strong>${done}</strong><small>انجام‌شده</small></div><div class="stat"><strong>${minutes}</strong><small>دقیقه مطالعه</small></div></div><div class="card"><h3>پیشرفت کلی · ${percent}٪</h3><div class="bar"><div style="width:${percent}%"></div></div></div>`:'<h3>برنامه هفتگی من</h3>')+`<div class="card"><h3>${days[selected]}</h3>${picker()}${list()}</div>${form()}`;
+let f=document.getElementById('taskForm');
+f.onsubmit=e=>{e.preventDefault();let d=new FormData(f);tasks.push({id:Date.now(),day:selected,name:d.get('name'),subject:d.get('subject')||'عمومی',mins:+d.get('mins')||30,done:false});save();render()};
+}
+if(page==='timer'){
+app.innerHTML=`<div class="card center"><h3>تایمر تمرکز</h3><p class="muted">زمانی برای تمرکز روی یک کار</p><div class="clock" id="clock">${fmt(seconds)}</div><p class="muted" id="status">${running?'در حال تمرکز':'آماده شروع'}</p><button class="primary" id="start">${running?'توقف':'شروع'}</button> <button class="secondary" id="reset">شروع دوباره</button><div style="margin-top:15px"><button class="secondary" onclick="setTime(15)">۱۵ دقیقه</button> <button class="secondary" onclick="setTime(25)">۲۵ دقیقه</button> <button class="secondary" onclick="setTime(45)">۴۵ دقیقه</button></div></div>`;
+document.getElementById('start').onclick=()=>{
+running=!running;
+if(running){timer=setInterval(()=>{seconds--;document.getElementById('clock').textContent=fmt(seconds);if(seconds<=0){clearInterval(timer);running=false;document.getElementById('status').textContent='زمان تمرکز تمام شد!';document.getElementById('start').textContent='شروع'}},1000);document.getElementById('start').textContent='توقف'}
+else{clearInterval(timer);document.getElementById('start').textContent='ادامه'}
+};
+document.getElementById('reset').onclick=()=>{clearInterval(timer);running=false;seconds=1500;render()};
+}
+if(page==='report'){
+app.innerHTML=`<div class="card"><h3>گزارش پیشرفت</h3><div class="stats"><div class="stat"><strong>${done}</strong><small>کار انجام‌شده</small></div><div class="stat"><strong>${minutes}</strong><small>دقیقه مطالعه</small></div><div class="stat"><strong>${percent}٪</strong><small>پیشرفت</small></div></div><p class="muted">پیشرفت روزهای هفته</p>${days.map((d,i)=>{let a=tasks.filter(t=>t.day===i),n=a.filter(t=>t.done).length,p=a.length?Math.round(n/a.length*100):0;return `<p style="font-size:12px">${d} · ${n} از ${a.length}</p><div class="bar"><div style="width:${p}%"></div></div>`}).join('')}</div><button class="secondary" onclick="clearTasks()">پاک‌کردن همه اطلاعات</button>`;
+}
+}
+function chooseDay(i){selected=i;render()}
+function toggleTask(id){let t=tasks.find(t=>t.id===id);if(t)t.done=!t.done;save();render()}
+function deleteTask(id){tasks=tasks.filter(t=>t.id!==id);save();render()}
+function clearTasks(){if(confirm('همه اطلاعات پاک شوند؟')){tasks=[];save();render()}}
+function setTime(m){clearInterval(timer);running=false;seconds=m*60;render()}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{page=b.dataset.page;render()});
+render();
+</script>
+</body>
+</html>
