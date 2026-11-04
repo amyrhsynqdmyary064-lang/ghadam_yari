@@ -1,0 +1,440 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101326">
+<title>قدم‌یاری | نسخه دوم</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap');
+
+:root{
+ --bg:#f3f4fc;--surface:#fff;--ink:#171a32;--muted:#8589a5;
+ --purple:#8067f5;--blue:#5c9df5;--pink:#ed79b5;--green:#38b98c;
+ --dark:#11152b;--line:#e9eaf4;--shadow:0 12px 35px #25264b12;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;background:var(--bg);color:var(--ink);
+ font-family:'Vazirmatn',Tahoma,sans-serif;min-height:100vh;
+ overflow-x:hidden;transition:background .4s,color .4s;
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.ambient{
+ position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:-1;
+}
+.orb{position:absolute;border-radius:50%;filter:blur(2px);opacity:.2;animation:float 12s ease-in-out infinite alternate}
+.orb.one{width:280px;height:280px;background:#9d8aff;top:5%;right:-120px}
+.orb.two{width:240px;height:240px;background:#ff9acb;bottom:4%;left:-110px;animation-delay:-5s}
+.orb.three{width:180px;height:180px;background:#75d9cf;top:50%;left:45%;animation-delay:-8s}
+@keyframes float{to{transform:translate(35px,-45px) scale(1.2)}}
+.app{width:min(1120px,100%);margin:auto;padding:18px 17px 100px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{
+ width:47px;height:47px;border-radius:16px;display:grid;place-items:center;
+ color:white;font-size:23px;background:linear-gradient(135deg,#8d72ff,#4d9af5);
+ box-shadow:0 8px 22px #8067f555;animation:logoPulse 3s infinite;
+}
+@keyframes logoPulse{50%{box-shadow:0 8px 30px #8067f588}}
+.brand h1{font-size:20px;margin:0;font-weight:900}
+.brand small{color:var(--muted);font-size:11px}
+.top-actions{display:flex;gap:8px}
+.icon-btn{
+ border:1px solid var(--line);background:var(--surface);color:var(--ink);
+ border-radius:14px;width:43px;height:43px;font-size:18px;box-shadow:var(--shadow);
+ transition:.25s
+}
+.icon-btn:hover{transform:translateY(-3px) rotate(5deg)}
+.hero{
+ position:relative;overflow:hidden;border-radius:28px;padding:25px;
+ color:white;background:linear-gradient(120deg,#171a37,#29204e 60%,#51418c);
+ box-shadow:0 18px 45px #25204d35;margin-bottom:20px;
+}
+.hero:before,.hero:after{
+ content:"";position:absolute;border-radius:50%;border:1px solid #ffffff18;
+ width:240px;height:240px;left:-65px;top:-125px;
+ animation:spin 18s linear infinite;
+}
+.hero:after{width:330px;height:330px;left:-110px;top:-170px;animation-direction:reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero-content{position:relative;z-index:1;max-width:650px}
+.eyebrow{font-size:12px;color:#c6bcff;letter-spacing:.5px}
+.hero h2{font-size:clamp(23px,5vw,34px);margin:10px 0 7px;font-weight:900}
+.hero p{margin:0;color:#d3d0e8;font-size:13px;line-height:2}
+.hero-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:22px;flex-wrap:wrap}
+.hero-stat{font-size:12px;color:#d9d4f4}
+.hero-stat strong{font-size:23px;color:white;display:block}
+.hero-btn{
+ border:0;border-radius:14px;padding:12px 17px;color:#262044;
+ background:linear-gradient(110deg,#fff,#e7e1ff);font-weight:800;
+ box-shadow:0 7px 20px #0002;transition:.25s
+}
+.hero-btn:hover{transform:translateY(-3px) scale(1.03)}
+.nav{
+ display:flex;gap:7px;overflow-x:auto;padding:7px;margin-bottom:20px;
+ background:var(--dark);border-radius:18px;scrollbar-width:none;
+}
+.nav button{
+ flex:1;min-width:max-content;border:0;border-radius:12px;padding:11px 14px;
+ background:transparent;color:#b8bad0;font-size:12px;font-weight:700;transition:.25s
+}
+.nav button.active{background:linear-gradient(120deg,#8b72ff,#5b9cf5);color:white;box-shadow:0 5px 18px #8067f555}
+.nav button:hover{color:white}
+.page{display:none;animation:pageIn .45s ease both}
+.page.active{display:block}
+@keyframes pageIn{from{opacity:0;transform:translateY(13px)}to{opacity:1;transform:translateY(0)}}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 2px 13px}
+.section-head h3{margin:0;font-size:17px;font-weight:900}
+.section-head small{color:var(--muted);font-size:11px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.card{
+ background:var(--surface);border:1px solid var(--line);border-radius:21px;
+ padding:17px;box-shadow:var(--shadow);transition:transform .25s,box-shadow .25s;
+ min-width:0;animation:cardIn .55s both;
+}
+.card:hover{transform:translateY(-5px);box-shadow:0 17px 35px #25264b18}
+@keyframes cardIn{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+.stat-card{position:relative;overflow:hidden}
+.stat-card:after{content:"";position:absolute;width:75px;height:75px;border-radius:50%;background:var(--tint);left:-25px;bottom:-35px}
+.stat-icon{font-size:22px}
+.stat-number{font-size:27px;font-weight:900;margin:10px 0 0;line-height:1.4}
+.stat-label{font-size:11px;color:var(--muted)}
+.progress-track{height:8px;border-radius:20px;background:var(--line);overflow:hidden;margin-top:13px}
+.progress-fill{height:100%;width:0;border-radius:20px;background:linear-gradient(90deg,#8067f5,#5c9df5);transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:var(--shadow);margin-bottom:14px}
+.panel h3{font-size:15px;margin:0 0 14px}
+.task-form{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr auto;gap:8px}
+.field{
+ width:100%;min-width:0;border:1px solid var(--line);background:var(--bg);
+ color:var(--ink);border-radius:12px;padding:11px 10px;outline:none;font-size:12px;
+}
+.field:focus{border-color:var(--purple);box-shadow:0 0 0 3px #8067f51a}
+.primary{
+ border:0;border-radius:12px;padding:11px 17px;color:white;font-weight:800;
+ background:linear-gradient(120deg,#8067f5,#5c9df5);transition:.25s;
+}
+.primary:hover{transform:translateY(-2px);box-shadow:0 7px 17px #8067f544}
+.task-list{display:grid;gap:9px}
+.task{
+ display:flex;align-items:center;gap:10px;padding:12px;
+ background:var(--bg);border:1px solid var(--line);border-radius:15px;
+ animation:taskIn .3s ease both;transition:.2s
+}
+@keyframes taskIn{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:translateX(0)}}
+.task.done{opacity:.58}
+.task.done .task-name{text-decoration:line-through}
+.task-check{width:21px;height:21px;accent-color:var(--purple);flex-shrink:0}
+.task-info{flex:1;min-width:0}
+.task-name{font-size:13px;font-weight:700;overflow-wrap:anywhere}
+.task-meta{font-size:10px;color:var(--muted);margin-top:4px}
+.delete{border:0;background:transparent;color:#d47c91;font-size:18px;padding:5px}
+.empty{text-align:center;color:var(--muted);font-size:12px;padding:25px 8px}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}
+.day{
+ border:1px solid var(--line);background:var(--bg);border-radius:13px;
+ padding:12px 4px;text-align:center;color:var(--ink);transition:.2s
+}
+.day strong{display:block;font-size:12px}
+.day span{font-size:10px;color:var(--muted)}
+.day.selected{background:linear-gradient(145deg,#8067f5,#5c9df5);color:white;border-color:transparent;box-shadow:0 7px 17px #8067f544}
+.day.selected span{color:#e8e3ff}
+.timer-wrap{display:grid;place-items:center;padding:12px}
+.timer-ring{
+ width:min(260px,70vw);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;
+ background:conic-gradient(#8067f5 var(--angle,0deg),var(--line) 0);
+ position:relative;box-shadow:0 12px 35px #8067f522;
+}
+.timer-ring:before{content:"";position:absolute;inset:12px;border-radius:50%;background:var(--surface)}
+.timer-inner{position:relative;text-align:center}
+.timer-time{font-size:42px;font-weight:900;direction:ltr;font-variant-numeric:tabular-nums}
+.timer-label{font-size:12px;color:var(--muted)}
+.timer-controls{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:17px}
+.timer-controls button{min-width:90px}
+.preset{border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:9px 13px;border-radius:12px;font-size:12px}
+.preset.active{border-color:var(--purple);color:var(--purple);background:#8067f511}
+.chart{display:flex;align-items:end;gap:10px;height:165px;padding:12px 5px 0}
+.bar-col{height:100%;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:end;gap:7px}
+.bar{width:min(35px,75%);height:0;min-height:3px;border-radius:9px 9px 3px 3px;background:linear-gradient(0deg,#8067f5,#9c8bff);transition:height 1s}
+.bar-label{font-size:10px;color:var(--muted)}
+.bar-value{font-size:9px;color:var(--muted)}
+.badges{display:flex;gap:9px;flex-wrap:wrap}
+.badge-item{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center;flex:1;min-width:90px}
+.badge-item b{display:block;font-size:23px}
+.badge-item span{font-size:10px;color:var(--muted)}
+.toast{
+ position:fixed;bottom:22px;left:50%;transform:translate(-50%,25px);
+ background:#191c36;color:white;padding:12px 19px;border-radius:14px;
+ font-size:12px;opacity:0;pointer-events:none;transition:.3s;z-index:10;
+ box-shadow:0 10px 30px #0003;white-space:nowrap
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.footer{text-align:center;color:var(--muted);font-size:10px;padding:25px 0}
+body.dark{
+ --bg:#101326;--surface:#1a1e36;--ink:#f0efff;--muted:#a2a5c0;
+ --line:#303451;--shadow:0 12px 35px #0003;
+}
+body.dark .nav{background:#080b19}
+body.dark .field{background:#11152a}
+body.dark .task{background:#14182d}
+body.dark .day{background:#14182d}
+body.dark .day.selected{background:linear-gradient(145deg,#8067f5,#5c9df5)}
+body.dark .preset{background:#14182d}
+@media(max-width:760px){
+ .grid{grid-template-columns:repeat(2,1fr)}
+ .task-form{grid-template-columns:1fr 1fr}
+ .task-form input:first-child{grid-column:1/-1}
+ .task-form button{grid-column:1/-1}
+ .days{gap:4px}
+ .day{padding:10px 2px}
+ .day strong{font-size:10px}
+ .hero{padding:21px}
+}
+@media(max-width:390px){
+ .app{padding-left:11px;padding-right:11px}
+ .card{padding:13px}
+ .nav button{padding:10px}
+ .timer-time{font-size:35px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<div class="ambient">
+ <div class="orb one"></div><div class="orb two"></div><div class="orb three"></div>
+</div>
+
+<div class="app">
+<header class="topbar">
+ <div class="brand">
+  <div class="logo">✦</div>
+  <div><h1>قدم‌یاری</h1><small>هر قدم، یک پیشرفت</small></div>
+ </div>
+ <div class="top-actions">
+  <button class="icon-btn" id="themeBtn" title="تغییر تم">☾</button>
+  <button class="icon-btn" onclick="showToast('به قدم‌یاری خوش آمدی!')">✧</button>
+ </div>
+</header>
+
+<section class="hero">
+ <div class="hero-content">
+  <div class="eyebrow">✦ نسخه دوم · همراه مسیر پیشرفت تو</div>
+  <h2 id="greeting">امروز برای پیشرفت آماده‌ای؟</h2>
+  <p>قرار نیست یک‌شبه به مقصد برسی؛ فقط کافیه هر روز یک قدم برداری.</p>
+  <div class="hero-bottom">
+   <div class="hero-stat">مجموع مطالعه امروز<strong id="heroMinutes">۰ دقیقه</strong></div>
+   <button class="hero-btn" onclick="switchPage('timer')">شروع تمرکز ←</button>
+  </div>
+ </div>
+</section>
+
+<nav class="nav">
+ <button class="active" data-page="home">⌂ خانه</button>
+ <button data-page="week">▦ برنامه هفتگی</button>
+ <button data-page="timer">◷ تمرکز</button>
+ <button data-page="report">▥ گزارش من</button>
+</nav>
+
+<main>
+<section class="page active" id="home">
+ <div class="section-head"><h3>نمای کلی امروز</h3><small id="todayDate"></small></div>
+ <div class="grid">
+  <div class="card stat-card" style="--tint:#8067f522">
+   <div class="stat-icon">⏱️</div><div class="stat-number" id="todayStudy">۰</div>
+   <div class="stat-label">دقیقه مطالعه</div><div class="progress-track"><div class="progress-fill" id="todayBar"></div></div>
+  </div>
+  <div class="card stat-card" style="--tint:#38b98c22">
+   <div class="stat-icon">✓</div><div class="stat-number" id="doneCount">۰</div>
+   <div class="stat-label">کار انجام‌شده</div><div class="progress-track"><div class="progress-fill" id="taskBar" style="background:linear-gradient(90deg,#38b98c,#83d9b5)"></div></div>
+  </div>
+  <div class="card stat-card" style="--tint:#ed79b522">
+   <div class="stat-icon">🔥</div><div class="stat-number" id="streak">۰</div>
+   <div class="stat-label">روزهای فعال متوالی</div>
+  </div>
+  <div class="card stat-card" style="--tint:#5c9df522">
+   <div class="stat-icon">⭐</div><div class="stat-number" id="points">۰</div>
+   <div class="stat-label">امتیاز قدم‌یاری</div>
+  </div>
+ </div>
+
+ <div class="section-head"><h3>کارهای امروز</h3><small>قدم‌های کوچک تو</small></div>
+ <div class="panel">
+  <div class="task-form">
+   <input class="field" id="taskName" placeholder="مثلاً: حل تمرین ریاضی">
+   <select class="field" id="taskSubject">
+    <option>ریاضی</option><option>فیزیک</option><option>شیمی</option>
+    <option>هندسه</option><option>فارسی</option><option>عربی</option>
+    <option>زبان</option><option>دینی</option><option>سایر</option>
+   </select>
+   <input class="field" id="taskMinutes" type="number" min="5" max="600" placeholder="دقیقه">
+   <select class="field" id="taskDay">
+    <option value="0">شنبه</option><option value="1">یکشنبه</option>
+    <option value="2">دوشنبه</option><option value="3">سه‌شنبه</option>
+    <option value="4">چهارشنبه</option><option value="5">پنجشنبه</option>
+    <option value="6">جمعه</option>
+   </select>
+   <button class="primary" onclick="addTask()">+ افزودن</button>
+  </div>
+ </div>
+ <div class="panel">
+  <h3>فهرست کارها</h3>
+  <div class="task-list" id="homeTasks"></div>
+ </div>
+ <div class="section-head"><h3>نشان‌های تو</h3><small>با ادامه دادن باز می‌شوند</small></div>
+ <div class="panel"><div class="badges" id="badges"></div></div>
+</section>
+
+<section class="page" id="week">
+ <div class="section-head"><h3>برنامه هفتگی</h3><small>روز موردنظرت را انتخاب کن</small></div>
+ <div class="panel">
+  <div class="days" id="days"></div>
+ </div>
+ <div class="panel">
+  <h3 id="selectedDayTitle">کارهای شنبه</h3>
+  <div class="task-list" id="weekTasks"></div>
+ </div>
+ <div class="panel">
+  <h3>افزودن کار جدید</h3>
+  <div class="task-form">
+   <input class="field" id="weekTaskName" placeholder="عنوان کار">
+   <select class="field" id="weekSubject">
+    <option>ریاضی</option><option>فیزیک</option><option>شیمی</option>
+    <option>هندسه</option><option>فارسی</option><option>عربی</option>
+    <option>زبان</option><option>دینی</option><option>سایر</option>
+   </select>
+   <input class="field" id="weekMinutes" type="number" min="5" max="600" placeholder="دقیقه">
+   <button class="primary" onclick="addWeekTask()">افزودن به روز</button>
+  </div>
+ </div>
+</section>
+
+<section class="page" id="timer">
+ <div class="section-head"><h3>اتاق تمرکز</h3><small>یک قدم عمیق‌تر</small></div>
+ <div class="panel">
+  <div class="timer-wrap">
+   <div class="timer-ring" id="timerRing">
+    <div class="timer-inner">
+     <div class="timer-time" id="timerDisplay">25:00</div>
+     <div class="timer-label" id="timerLabel">زمان تمرکز</div>
+    </div>
+   </div>
+  </div>
+  <div class="timer-controls">
+   <button class="primary" id="timerStart" onclick="toggleTimer()">شروع</button>
+   <button class="preset" onclick="setTimer(25,'تمرکز')">۲۵ دقیقه</button>
+   <button class="preset" onclick="setTimer(50,'تمرکز')">۵۰ دقیقه</button>
+   <button class="preset" onclick="setTimer(5,'استراحت')">۵ دقیقه استراحت</button>
+   <button class="preset" onclick="resetTimer()">بازنشانی</button>
+  </div>
+ </div>
+ <div class="panel">
+  <h3>چطور از تایمر استفاده کنی؟</h3>
+  <p style="font-size:12px;line-height:2;color:var(--muted);margin:0">
+   یک زمان انتخاب کن، عوامل حواس‌پرتی را کنار بگذار و تا پایان زمان روی یک کار تمرکز کن. بعد از هر نوبت، کمی استراحت کن.
+  </p>
+ </div>
+</section>
+
+<section class="page" id="report">
+ <div class="section-head"><h3>گزارش پیشرفت</h3><small>مسیرت را ببین</small></div>
+ <div class="grid">
+  <div class="card"><div class="stat-icon">📚</div><div class="stat-number" id="totalMinutes">۰</div><div class="stat-label">کل دقایق ثبت‌شده</div></div>
+  <div class="card"><div class="stat-icon">✓</div><div class="stat-number" id="totalDone">۰</div><div class="stat-label">کارهای تکمیل‌شده</div></div>
+ </div>
+ <div class="panel" style="margin-top:14px">
+  <h3>میزان مطالعه در روزهای هفته</h3>
+  <div class="chart" id="weeklyChart"></div>
+ </div>
+ <div class="panel">
+  <h3>عملکرد درس‌ها</h3>
+  <div id="subjectReport"></div>
+ </div>
+</section>
+</main>
+
+<div class="footer">قدم‌یاری · ساخته‌شده برای پیشرفت روزانه ✦</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const days=['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه'];
+const todayIndex=(new Date().getDay()+1)%7;
+let selectedDay=todayIndex;
+let tasks=[];
+let sessions=[];
+let timerSeconds=25*60;
+let timerInitial=25*60;
+let timerInterval=null;
+let timerMode='تمرکز';
+
+const $=id=>document.getElementById(id);
+const fa=n=>Number(n||0).toLocaleString('fa-IR');
+
+function loadData(){
+ try{
+  const saved=JSON.parse(localStorage.getItem('ghadam_tasks')||'[]');
+  tasks=saved.map((t,i)=>({
+   id:t.id||Date.now()+i,
+   name:t.name||t.text||t.title||'کار درسی',
+   subject:t.subject||'سایر',
+   minutes:Number(t.minutes||t.duration||0),
+   day:Number.isInteger(t.day)?t.day:(Number.isInteger(t.dayIndex)?t.dayIndex:todayIndex),
+   done:!!(t.done||t.completed),
+   date:t.date||new Date().toISOString().slice(0,10)
+  }));
+ }catch(e){tasks=[]}
+ try{sessions=JSON.parse(localStorage.getItem('ghadam_sessions')||'[]')}catch(e){sessions=[]}
+}
+function saveData(){
+ localStorage.setItem('ghadam_tasks',JSON.stringify(tasks));
+ localStorage.setItem('ghadam_sessions',JSON.stringify(sessions));
+}
+function showToast(msg){
+ const t=$('toast');t.textContent=msg;t.classList.add('show');
+ clearTimeout(window.toastTimeout);
+ window.toastTimeout=setTimeout(()=>t.classList.remove('show'),2200);
+}
+function switchPage(name){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===name));
+ $(''+name).classList.add('active');
+ if(name==='report')renderReport();
+ if(name==='week')renderWeek();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>switchPage(b.dataset.page)));
+
+function addTask(){
+ const name=$('taskName').value.trim();
+ const minutes=Number($('taskMinutes').value);
+ if(!name){showToast('اول عنوان کار را بنویس');return}
+ if(!minutes||minutes<5||minutes>600){showToast('زمان را بین ۵ تا ۶۰۰ دقیقه وارد کن');return}
+ tasks.push({id:Date.now(),name,subject:$('taskSubject').value,minutes,day:Number($('taskDay').value),done:false,date:new Date().toISOString().slice(0,10)});
+ $('taskName').value='';$('taskMinutes').value='';
+ saveData();renderAll();showToast('کار جدید اضافه شد ✦');
+}
+function addWeekTask(){
+ const name=$('weekTaskName').value.trim(),minutes=Number($('weekMinutes').value);
+ if(!name||!minutes||minutes<5||minutes>600){showToast('عنوان و زمان معتبر وارد کن');return}
+ tasks.push({id:Date.now(),name,subject:$('weekSubject').value,minutes,day:selectedDay,done:false,date:new Date().toISOString().slice(0,10)});
+ $('weekTaskName').value='';$('weekMinutes').value='';
+ saveData();renderAll();showToast('به برنامه هفتگی اضافه شد');
+}
+function toggleTask(id){
+ const t=tasks.find(x=>x.id===id);if(!t)return;
+ t.done=!t.done;
+ if(t.done){showToast('آفرین! یک قدم جلوتر رفتی ⭐');}
+ saveData();renderAll();
+}
+function deleteTask(id){
+ tasks=tasks.filter(t=>t.id!==id);saveData();renderAll();showToast('کار حذف شد');
+}
+function taskHTML(t){
+ return `<div class="task ${t.done?'done':''}">
+ <input class="task-check" type="checkbox" ${t.done?'checked':''} onchange="toggleTask(${t.id})">
+ <div class="task-info"><div class="task-name">${escapeHTML(t.name)}</div>
+ <div class="task-meta
